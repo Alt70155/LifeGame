@@ -6,12 +6,15 @@
   </head>
   <body>
     <script>
-    let arr = [1, 3, 4];
-    let arr2 = [];
-    arr2 = arr;
-    arr2.push(2);
-    document.write(arr+"<br>");
-    document.write(arr2);
+    let arr = [
+      [1, 3, 4],
+      [1, 3, 6]
+    ];
+    arr.forEach(function(val, index) {
+      val.forEach(function(val2, index2) {
+        document.write(val2 + " " + index + " " + index2 + "<br>");
+      })
+    });
     </script>
   </body>
 </html>
