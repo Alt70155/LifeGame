@@ -12,7 +12,7 @@ let init = () => {
     let currentStateTemp = [];
     for (let j = 0; j < tableSize; j++) {
       let td = document.createElement("td");
-      td.textContent = ct;
+      // td.textContent = ct;
       td.id = "num" + ct;
       td.classList.add("num" + ct);
       td.classList.add("white");
@@ -42,11 +42,11 @@ let next = () => {
       }
     }
   }
-  currentState = JSON.parse(JSON.stringify(currentNextState));
+  return currentState = JSON.parse(JSON.stringify(currentNextState));
 }
 
 let update = () => {
-  currentState.forEach(function(y, index1) {
+  next().forEach(function(y, index1) {
     y.forEach(function(x, index2) {
       let classNum = index1 * tableSize + index2;
       if (x === 1) {
@@ -56,6 +56,17 @@ let update = () => {
       }
     });
   });
+
+  // for(let y = 0; y < tableSize; y++) {
+  //   for(let x = 0; x < tableSize; x++) {
+  //     let n = y * tableSize + x; //tdのクラス番号を計算
+  //     if(currentState[y][x] === 1) {
+  //       paintBlack("num" + n);
+  //     } else {
+  //       paintWhite("num" + n);
+  //     }
+  //   }
+  // }
 }
 
 //自マスの周りの状況を判定
@@ -63,8 +74,11 @@ let circumferenceJudge = (i, j) => {
   let aliveState = 0;
   for (let y = -1; y < 2; y++) {
     for (let x = -1; x < 2; x++) {
-      if (currentState[i + y][j + x] !== currentState[i][j]) {
-        if (currentState[i + y][j + x] === 1) {
+      let iy = i + y;
+      let jx = j + x;
+      //比較する座標がx,y両方i,yと同じだった場合(自分のマスだった場合)、カウントしない
+      if (iy != i || jx != j) {
+        if (currentState[iy][jx] === 1) {
           aliveState++;
         }
       }
@@ -73,35 +87,33 @@ let circumferenceJudge = (i, j) => {
   return aliveState;
 }
 
-let paintFunc = (tdClassName) => {
-  let result = tdClassName.split("m");
+let paintFunc = (paintTileClass) => {
+  let result = paintTileClass.split("m");
   let i = result[1] / tableSize;
   let j = result[1] % tableSize;
-  let td = document.getElementById(tdClassName);
+  let td = document.getElementById(paintTileClass);
   i = Math.floor(i);
-
+  currentState[i][j] = 1;
+  paintBlack(paintTileClass);
 }
 
-let paintBlack = (td) => {
-  let td = document.getElementById(td);
+
+let paintBlack = (paintTileClass) => {
+  let td = document.getElementById(paintTileClass);
   td.classList.remove("white");
   td.classList.add("black");
-  if (currentState == )
 }
 
-let paintWhite = (x, i, j) => {
-  x.classList.remove("black");
-  x.classList.add("white");
+let paintWhite = (paintTileClass) => {
+  let td = document.getElementById(paintTileClass);
+  td.classList.remove("black");
+  td.classList.add("white");
 }
 
 init();
-paintBlack("num11");
-paintBlack("num16");
-paintBlack("num8");
-paintBlack("num13");
-next();
-update();
-
+paintFunc("num17");
+paintFunc("num7");
+paintFunc("num12");
 // for (let i = 0; i != tableSize; i++) {
 //   for (let j = 0; j != tableSize; j++) {
 //     document.write(currentState[i][j] + "　");
