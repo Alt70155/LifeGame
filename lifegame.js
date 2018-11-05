@@ -19,8 +19,7 @@ let init = () => {
       if(i !== 0 && ct % tableSize === 0) { td.classList.add("left-side"); }
       if(ct % tableSize === tableSize - 1) { td.classList.add("right-side"); }
       if(tableSize * tableSize - tableSize <= ct) { td.classList.add("bottom-side"); }
-      td.classList.add("num" + ct);
-      td.classList.add("white");
+      td.classList.add("num" + ct, "white");
       td.onclick = clickFunc;
       tr.appendChild(td);
       currentStateTemp.push(0);
@@ -36,7 +35,9 @@ let init = () => {
 let clickFunc = (e) => {
   //最初のhtmlクラスのみ取得
   let targetClass = e.target.className.split(" ")[0];
-  initPaintFunc(targetClass);
+  if(targetClass !== "left-side" && targetClass !== "right-side" && targetClass !== "upper-side" && targetClass !== "bottom-side") {
+      initPaintFunc(targetClass);
+  }
 }
 
 let next = () => {
