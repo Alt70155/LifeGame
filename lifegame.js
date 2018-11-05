@@ -1,6 +1,6 @@
 "use strict";
 
-let tableSize = 40;
+const tableSize = 40;
 let currentState = [];
 let currentNextState = [];
 let id;
@@ -13,12 +13,8 @@ let init = () => {
     let currentStateTemp = [];
     for (let j = 0; j < tableSize; j++) {
       let td = document.createElement("td");
-      // td.textContent = ct;
+      outerFrameHidden(td, ct, i, j);
       td.id = "num" + ct;
-      if(i === 0) { td.classList.add("upper-side"); }
-      if(i !== 0 && ct % tableSize === 0) { td.classList.add("left-side"); }
-      if(ct % tableSize === tableSize - 1) { td.classList.add("right-side"); }
-      if(tableSize * tableSize - tableSize <= ct) { td.classList.add("bottom-side"); }
       td.classList.add("num" + ct, "white");
       td.onclick = clickFunc;
       tr.appendChild(td);
@@ -32,25 +28,30 @@ let init = () => {
   currentNextState = JSON.parse(JSON.stringify(currentState));
 }
 
+//tableの一番外側を非表示にする
+let outerFrameHidden = (td, ct, i, j) => {
+  if(i === 0) { td.classList.add("upper-side"); }
+  if(i !== 0 && ct % tableSize === 0) { td.classList.add("left-side"); }
+  if(ct % tableSize === tableSize - 1) { td.classList.add("right-side"); }
+  if(tableSize * tableSize - tableSize <= ct) { td.classList.add("bottom-side"); }
+}
+
 let clickFunc = (e) => {
-  //最初のhtmlクラスのみ取得
+  //最初のクラスのみ取得
   let targetClass = e.target.className.split(" ")[0];
+  //外枠がクリックされた場合をはじく
   if(targetClass !== "left-side" && targetClass !== "right-side" && targetClass !== "upper-side" && targetClass !== "bottom-side") {
       initPaintFunc(targetClass);
   }
 }
 
-let next = () => {
+
+let updateArrayToNextState = () => {
   for (let i = 1; i != tableSize - 1; i++) {
     for (let j = 1; j != tableSize - 1; j++) {
-      let n = 0;
-      n = circumferenceJudge(i, j);
+      let n = circumferenceJudge(i, j);
       if (currentState[i][j]) {
-        if (n === 2 || n === 3) {
-          currentNextState[i][j] = 1;
-        } else {
-          currentNextState[i][j] = 0;
-        }
+        n === 2 || n === 3 ? currentNextState[i][j] = 1 : currentNextState[i][j] = 0;
       } else {
         n === 3 ? currentNextState[i][j] = 1 : currentNextState[i][j] = 0;
       }
@@ -59,8 +60,8 @@ let next = () => {
   return currentState = JSON.parse(JSON.stringify(currentNextState));
 }
 
-let update = () => {
-  next().forEach(function(y, index1) {
+let updateCellColor = () => {
+  updateArrayToNextState().forEach(function(y, index1) {
     y.forEach(function(x, index2) {
       let classNum = index1 * tableSize + index2;
       if (x === 1) {
@@ -91,6 +92,7 @@ let circumferenceJudge = (i, j) => {
 }
 
 let initPaintFunc = (paintTileClass) => {
+  //クラスnum~の数値を取り出す
   let result = paintTileClass.split("m");
   let i = result[1] / tableSize;
   let j = result[1] % tableSize;
@@ -105,7 +107,6 @@ let initPaintFunc = (paintTileClass) => {
   }
 }
 
-
 let paintBlack = (paintTileClass) => {
   let td = document.getElementById(paintTileClass);
   td.classList.remove("white");
@@ -119,7 +120,7 @@ let paintWhite = (paintTileClass) => {
 }
 
 let start = () => {
-  id = setInterval(update, 100);
+  id = setInterval(updateCellColor, 100);
 }
 
 let stop = () => {

@@ -6,12 +6,16 @@
   </head>
   <body>
     <script>
-    let n = () => {
-      let arr = [2, 3, 5];
-      return arr;
+    function execCallback(callback) {
+      document.write("hello");
+      callback();
     }
 
-    n().forEach(function(y) { document.write(y); });
+    let myCallback = function() {
+      document.write("hello2");
+    }
+
+    execCallback(myCallback);
     </script>
   </body>
 </html>
