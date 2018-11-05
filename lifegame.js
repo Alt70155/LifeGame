@@ -1,8 +1,9 @@
 "use strict";
 
-let tableSize = 30;
+let tableSize = 40;
 let currentState = [];
 let currentNextState = [];
+let id;
 
 let init = () => {
   let table = document.getElementById("table");
@@ -14,6 +15,10 @@ let init = () => {
       let td = document.createElement("td");
       // td.textContent = ct;
       td.id = "num" + ct;
+      if(i === 0) { td.classList.add("upper-side"); }
+      if(i !== 0 && ct % tableSize === 0) { td.classList.add("left-side"); }
+      if(ct % tableSize === tableSize - 1) { td.classList.add("right-side"); }
+      if(tableSize * tableSize - tableSize <= ct) { td.classList.add("bottom-side"); }
       td.classList.add("num" + ct);
       td.classList.add("white");
       td.onclick = clickFunc;
@@ -24,13 +29,14 @@ let init = () => {
     table.appendChild(tr);
     currentState.push(currentStateTemp);
   }
+  //currentStateをNextに値渡し
   currentNextState = JSON.parse(JSON.stringify(currentState));
 }
 
 let clickFunc = (e) => {
   //最初のhtmlクラスのみ取得
   let targetClass = e.target.className.split(" ")[0];
-  paintFunc(targetClass);
+  initPaintFunc(targetClass);
 }
 
 let next = () => {
@@ -63,17 +69,6 @@ let update = () => {
       }
     });
   });
-
-  // for(let y = 0; y < tableSize; y++) {
-  //   for(let x = 0; x < tableSize; x++) {
-  //     let n = y * tableSize + x; //tdのクラス番号を計算
-  //     if(currentState[y][x] === 1) {
-  //       paintBlack("num" + n);
-  //     } else {
-  //       paintWhite("num" + n);
-  //     }
-  //   }
-  // }
 }
 
 //自マスの周りの状況を判定
@@ -94,13 +89,13 @@ let circumferenceJudge = (i, j) => {
   return aliveState;
 }
 
-let paintFunc = (paintTileClass) => {
+let initPaintFunc = (paintTileClass) => {
   let result = paintTileClass.split("m");
   let i = result[1] / tableSize;
   let j = result[1] % tableSize;
   let td = document.getElementById(paintTileClass);
   i = Math.floor(i);
-  if(currentState[i][j]) {
+  if (currentState[i][j]) {
     currentState[i][j] = 0;
     paintWhite(paintTileClass);
   } else {
@@ -122,21 +117,12 @@ let paintWhite = (paintTileClass) => {
   td.classList.add("white");
 }
 
-let btn = () => {
-  setInterval(update, 100);
+let start = () => {
+  id = setInterval(update, 100);
+}
+
+let stop = () => {
+  clearInterval(id);
 }
 
 init();
-// for (let i = 0; i != tableSize; i++) {
-//   for (let j = 0; j != tableSize; j++) {
-//     document.write(currentState[i][j] + "　");
-//   }
-//   document.write("<br>");
-// }
-// document.write("<br>");
-// for (let i = 0; i != tableSize; i++) {
-//   for (let j = 0; j != tableSize; j++) {
-//     document.write(currentNextState[i][j] + "　");
-//   }
-//   document.write("<br>");
-// }
