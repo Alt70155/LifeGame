@@ -1,6 +1,6 @@
 "use strict";
 
-let tableSize = 5;
+let tableSize = 30;
 let currentState = [];
 let currentNextState = [];
 
@@ -16,6 +16,7 @@ let init = () => {
       td.id = "num" + ct;
       td.classList.add("num" + ct);
       td.classList.add("white");
+      td.onclick = clickFunc;
       tr.appendChild(td);
       currentStateTemp.push(0);
       ct++;
@@ -24,6 +25,12 @@ let init = () => {
     currentState.push(currentStateTemp);
   }
   currentNextState = JSON.parse(JSON.stringify(currentState));
+}
+
+let clickFunc = (e) => {
+  //最初のhtmlクラスのみ取得
+  let targetClass = e.target.className.split(" ")[0];
+  paintFunc(targetClass);
 }
 
 let next = () => {
@@ -93,8 +100,13 @@ let paintFunc = (paintTileClass) => {
   let j = result[1] % tableSize;
   let td = document.getElementById(paintTileClass);
   i = Math.floor(i);
-  currentState[i][j] = 1;
-  paintBlack(paintTileClass);
+  if(currentState[i][j]) {
+    currentState[i][j] = 0;
+    paintWhite(paintTileClass);
+  } else {
+    currentState[i][j] = 1;
+    paintBlack(paintTileClass);
+  }
 }
 
 
@@ -110,10 +122,11 @@ let paintWhite = (paintTileClass) => {
   td.classList.add("white");
 }
 
+let btn = () => {
+  setInterval(update, 100);
+}
+
 init();
-paintFunc("num17");
-paintFunc("num7");
-paintFunc("num12");
 // for (let i = 0; i != tableSize; i++) {
 //   for (let j = 0; j != tableSize; j++) {
 //     document.write(currentState[i][j] + "　");
