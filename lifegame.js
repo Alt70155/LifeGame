@@ -16,7 +16,7 @@ let init = () => {
       let td = document.createElement("td");
       outerFrameHidden(td, ct, i, j);
       td.id = "num" + ct;
-      td.classList.add("num" + ct, "white");
+      td.classList.add("white");
       td.onclick = onClickFunc;
       tr.appendChild(td);
       currentStateTemp.push(0);
@@ -46,11 +46,12 @@ let outerFrameHidden = (td, ct, i, j) => {
 }
 
 let onClickFunc = (e) => {
-  //要素の最初のクラス(非表示にするためのクラスがある場合はそれを、違う場合はblack/white)を取得
+  let targetId = e.target.id;
+  //要素の最初のクラスを取得
   let targetClass = e.target.className.split(" ")[0];
-  //targetClassが外枠のクラスだった場合をはじく
+  //classが外枠のクラスだった場合をはじく
   if (targetClass !== "left-side" && targetClass !== "right-side" && targetClass !== "upper-side" && targetClass !== "bottom-side") {
-    initPaintFunc(targetClass);
+    initPaintFunc(targetId);
   }
 }
 
@@ -75,12 +76,12 @@ let updateArrayToNextState = () => {
 let updateCellColor = () => {
   updateArrayToNextState().forEach(function(y, index1) {
     y.forEach(function(x, index2) {
-      //二次元配列のindexからclass番号を計算
-      let classNum = index1 * tableSize + index2;
+      //二次元配列のindexからid番号を計算
+      let idNum = index1 * tableSize + index2;
       if (x === 1) {
-        paintBlack("num" + classNum);
+        paintBlack("num" + idNum);
       } else {
-        paintWhite("num" + classNum);
+        paintWhite("num" + idNum);
       }
     });
   });
@@ -106,30 +107,29 @@ let lifeDeathJudge = (i, j) => {
   return aliveState;
 }
 
-let initPaintFunc = (paintTileClass) => {
-  //クラスnum~のm以降の数値部分を配列として取り出す
-  let result = paintTileClass.split("m");
-  let i = result[1] / tableSize; //二次元配列のy座標を計算
-  let j = result[1] % tableSize; //x座標
-  let td = document.getElementById(paintTileClass);
+let initPaintFunc = (paintTileId) => {
+  //IDから二次元配列の座標を取り出す
+  let result = paintTileId.split("m");
+  let i = result[1] / tableSize;
+  let j = result[1] % tableSize;
   i = Math.floor(i);
   if (currentState[i][j]) {
     currentState[i][j] = 0;
-    paintWhite(paintTileClass);
+    paintWhite(paintTileId);
   } else {
     currentState[i][j] = 1;
-    paintBlack(paintTileClass);
+    paintBlack(paintTileId);
   }
 }
 
-let paintBlack = (paintTileClass) => {
-  let td = document.getElementById(paintTileClass);
+let paintBlack = (paintTileId) => {
+  let td = document.getElementById(paintTileId);
   td.classList.remove("white");
   td.classList.add("black");
 }
 
-let paintWhite = (paintTileClass) => {
-  let td = document.getElementById(paintTileClass);
+let paintWhite = (paintTileId) => {
+  let td = document.getElementById(paintTileId);
   td.classList.remove("black");
   td.classList.add("white");
 }
@@ -140,10 +140,24 @@ let infinityCheck = () => {
   if(currentState.toString() === currentNextState.toString()) {
     sameAsBeforeCnt++;
     if(sameAsBeforeCnt === STOP_TIME) {
-      console.log(sameAsBeforeCnt);
       stop();
     }
   }
+}
+
+let clearTable = () => {
+  if(typeof id !== "undefined") {
+    stop();
+  }
+  currentState.forEach(function(y, idx1) {
+    currentState.forEach(function(x, idx2) {
+      if(currentState[idx1][idx2] === 1) {
+        currentState[idx1][idx2] = 0;
+        let targetId = idx1 * tableSize + idx2;
+        paintWhite("num" + targetId);
+      }
+    });
+  });
 }
 
 let start = () => {
