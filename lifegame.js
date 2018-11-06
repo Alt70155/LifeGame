@@ -4,6 +4,7 @@ const tableSize = 40;
 let currentState = [];
 let currentNextState = [];
 let id;
+let sameAsBeforeCnt = 0;
 
 let init = () => {
   let table = document.getElementById("table");
@@ -66,6 +67,8 @@ let updateArrayToNextState = () => {
       }
     }
   }
+  infinityCheck();
+  //配列を上書き
   return currentState = JSON.parse(JSON.stringify(currentNextState));
 }
 
@@ -129,6 +132,18 @@ let paintWhite = (paintTileClass) => {
   let td = document.getElementById(paintTileClass);
   td.classList.remove("black");
   td.classList.add("white");
+}
+
+let infinityCheck = () => {
+  //無限ループ防止に前回の配列と100秒間同じだった場合止める
+  const STOP_TIME = 100;
+  if(currentState.toString() === currentNextState.toString()) {
+    sameAsBeforeCnt++;
+    if(sameAsBeforeCnt === STOP_TIME) {
+      console.log(sameAsBeforeCnt);
+      stop();
+    }
+  }
 }
 
 let start = () => {
