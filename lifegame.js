@@ -31,18 +31,26 @@ let init = () => {
 
 //外枠１マス分多く取って処理・計算しているため、tableの一番外側を非表示にする。
 let outerFrameHidden = (td, ct, i, j) => {
-  if(i === 0) { td.classList.add("upper-side"); }
-  if(i !== 0 && ct % tableSize === 0) { td.classList.add("left-side"); }
-  if(ct % tableSize === tableSize - 1) { td.classList.add("right-side"); }
-  if(ct >= tableSize * tableSize - tableSize) { td.classList.add("bottom-side"); }
+  if (i === 0) {
+    td.classList.add("upper-side");
+  }
+  if (i !== 0 && ct % tableSize === 0) {
+    td.classList.add("left-side");
+  }
+  if (ct % tableSize === tableSize - 1) {
+    td.classList.add("right-side");
+  }
+  if (ct >= tableSize * tableSize - tableSize) {
+    td.classList.add("bottom-side");
+  }
 }
 
 let onClickFunc = (e) => {
   //最初のクラスのみ取得
   let targetClass = e.target.className.split(" ")[0];
   //外枠がクリックされた場合をはじく
-  if(targetClass !== "left-side" && targetClass !== "right-side" && targetClass !== "upper-side" && targetClass !== "bottom-side") {
-      initPaintFunc(targetClass);
+  if (targetClass !== "left-side" && targetClass !== "right-side" && targetClass !== "upper-side" && targetClass !== "bottom-side") {
+    initPaintFunc(targetClass);
   }
 }
 
@@ -77,18 +85,22 @@ let updateCellColor = () => {
 //自マスの周りの状況を判定
 let circumferenceJudge = (i, j) => {
   let aliveState = 0;
-  for (let y = -1; y < 2; y++) {
-    for (let x = -1; x < 2; x++) {
+  let diffCoor = [-1, 0 ,1];
+  diffCoor.forEach(function(y) {
+    diffCoor.forEach(function(x) {
+      //現座標から周囲8方向の座標を計算
       let iy = i + y;
       let jx = j + x;
-      //比較する座標がx,y両方i,yと同じだった場合(自分のマスだった場合)、カウントしない
+       //比較する座標がx,y両方i,yと同じだった場合(自分のマスだった場合)、カウントしない
       if (iy != i || jx != j) {
         if (currentState[iy][jx] === 1) {
           aliveState++;
         }
       }
-    }
-  }
+    });
+  });
+
+
   return aliveState;
 }
 
