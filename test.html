@@ -6,16 +6,8 @@
   </head>
   <body>
     <script>
-    function execCallback(callback) {
-      document.write("hello");
-      callback();
-    }
-
-    let myCallback = function() {
-      document.write("hello2");
-    }
-
-    execCallback(myCallback);
+    let p = x => document.write(x);
+    let array = Array(2).fill(0).forEach(p);
     </script>
   </body>
 </html>

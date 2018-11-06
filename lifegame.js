@@ -16,7 +16,7 @@ let init = () => {
       outerFrameHidden(td, ct, i, j);
       td.id = "num" + ct;
       td.classList.add("num" + ct, "white");
-      td.onclick = clickFunc;
+      td.onclick = onClickFunc;
       tr.appendChild(td);
       currentStateTemp.push(0);
       ct++;
@@ -24,19 +24,20 @@ let init = () => {
     table.appendChild(tr);
     currentState.push(currentStateTemp);
   }
+
   //currentStateをNextに値渡し
   currentNextState = JSON.parse(JSON.stringify(currentState));
 }
 
-//tableの一番外側を非表示にする
+//外枠１マス分多く取って処理・計算しているため、tableの一番外側を非表示にする。
 let outerFrameHidden = (td, ct, i, j) => {
   if(i === 0) { td.classList.add("upper-side"); }
   if(i !== 0 && ct % tableSize === 0) { td.classList.add("left-side"); }
   if(ct % tableSize === tableSize - 1) { td.classList.add("right-side"); }
-  if(tableSize * tableSize - tableSize <= ct) { td.classList.add("bottom-side"); }
+  if(ct >= tableSize * tableSize - tableSize) { td.classList.add("bottom-side"); }
 }
 
-let clickFunc = (e) => {
+let onClickFunc = (e) => {
   //最初のクラスのみ取得
   let targetClass = e.target.className.split(" ")[0];
   //外枠がクリックされた場合をはじく
@@ -92,7 +93,7 @@ let circumferenceJudge = (i, j) => {
 }
 
 let initPaintFunc = (paintTileClass) => {
-  //クラスnum~の数値を取り出す
+  //クラスnum~の数値部分を取り出す
   let result = paintTileClass.split("m");
   let i = result[1] / tableSize;
   let j = result[1] % tableSize;
@@ -127,4 +128,4 @@ let stop = () => {
   clearInterval(id);
 }
 
-init();
+// init();
