@@ -24,8 +24,7 @@ let init = () => {
     table.appendChild(tr);
     currentState.push(currentStateTemp);
   }
-
-  //currentStateをNextに値渡し
+  //currentStateをNextに値渡しして配列を複製
   currentNextState = JSON.parse(JSON.stringify(currentState));
 }
 
@@ -46,9 +45,9 @@ let outerFrameHidden = (td, ct, i, j) => {
 }
 
 let onClickFunc = (e) => {
-  //最初のクラスのみ取得
+  //要素の最初のクラス(非表示にするためのクラスがある場合はそれを、違う場合はblack/white)を取得
   let targetClass = e.target.className.split(" ")[0];
-  //外枠がクリックされた場合をはじく
+  //targetClassが外枠のクラスだった場合をはじく
   if (targetClass !== "left-side" && targetClass !== "right-side" && targetClass !== "upper-side" && targetClass !== "bottom-side") {
     initPaintFunc(targetClass);
   }
@@ -56,9 +55,10 @@ let onClickFunc = (e) => {
 
 
 let updateArrayToNextState = () => {
+  //外枠を抜かして判定
   for (let i = 1; i != tableSize - 1; i++) {
     for (let j = 1; j != tableSize - 1; j++) {
-      let n = circumferenceJudge(i, j);
+      let n = lifeDeathJudge(i, j);
       if (currentState[i][j]) {
         n === 2 || n === 3 ? currentNextState[i][j] = 1 : currentNextState[i][j] = 0;
       } else {
@@ -72,6 +72,7 @@ let updateArrayToNextState = () => {
 let updateCellColor = () => {
   updateArrayToNextState().forEach(function(y, index1) {
     y.forEach(function(x, index2) {
+      //二次元配列のindexからclass番号を計算
       let classNum = index1 * tableSize + index2;
       if (x === 1) {
         paintBlack("num" + classNum);
@@ -82,8 +83,8 @@ let updateCellColor = () => {
   });
 }
 
-//自マスの周りの状況を判定
-let circumferenceJudge = (i, j) => {
+//自マスの周りの生死を判定
+let lifeDeathJudge = (i, j) => {
   let aliveState = 0;
   let diffCoor = [-1, 0 ,1];
   diffCoor.forEach(function(y) {
@@ -99,16 +100,14 @@ let circumferenceJudge = (i, j) => {
       }
     });
   });
-
-
   return aliveState;
 }
 
 let initPaintFunc = (paintTileClass) => {
-  //クラスnum~の数値部分を取り出す
+  //クラスnum~のm以降の数値部分を配列として取り出す
   let result = paintTileClass.split("m");
-  let i = result[1] / tableSize;
-  let j = result[1] % tableSize;
+  let i = result[1] / tableSize; //二次元配列のy座標を計算
+  let j = result[1] % tableSize; //x座標
   let td = document.getElementById(paintTileClass);
   i = Math.floor(i);
   if (currentState[i][j]) {
@@ -139,5 +138,3 @@ let start = () => {
 let stop = () => {
   clearInterval(id);
 }
-
-// init();
