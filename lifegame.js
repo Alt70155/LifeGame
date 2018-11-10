@@ -7,13 +7,13 @@ let id = 0;
 let sameAsBeforeCnt = 0;
 
 const init = () => {
-  let table = document.getElementById("table");
+  const table = document.getElementById("table");
   let ct = 0;
   for (let i = 0; i < tableSize; i++) {
-    let tr = document.createElement("tr");
+    const tr = document.createElement("tr");
     let currentStateTemp = [];
     for (let j = 0; j < tableSize; j++) {
-      let td = document.createElement("td");
+      const td = document.createElement("td");
       outerFrameHidden(td, ct, i, j);
       // td.textContent = ct;
       td.id = "num" + ct;
@@ -46,26 +46,27 @@ const outerFrameHidden = (td, ct, i, j) => {
   }
 }
 
-let onClickFunc = (e) => {
-  let targetId = e.target.id;
+const onClickFunc = (e) => {
+  const targetId = e.target.id;
   //要素の最初のクラスを取得
-  let targetClass = e.target.className.split(" ")[0];
+  const targetClass = e.target.className.split(" ")[0];
   //classが外枠のクラスだった場合をはじく
-  if (targetClass !== "left-side" && targetClass !== "right-side" && targetClass !== "upper-side" && targetClass !== "bottom-side") {
+  if (targetClass !== "left-side" && targetClass !== "right-side" &&
+      targetClass !== "upper-side" && targetClass !== "bottom-side") {
     initPaintFunc(targetId);
   }
 }
 
 
-let updateArrayToNextState = () => {
+const updateArrayToNextState = () => {
   //外枠を抜かして判定
   for (let i = 1; i != tableSize - 1; i++) {
     for (let j = 1; j != tableSize - 1; j++) {
-      let n = lifeDeathJudge(i, j);
+      const cellCountResult = lifeDeathJudge(i, j);
       if (currentState[i][j]) {
-        n === 2 || n === 3 ? currentNextState[i][j] = 1 : currentNextState[i][j] = 0;
+        cellCountResult === 2 || cellCountResult === 3 ? currentNextState[i][j] = 1 : currentNextState[i][j] = 0;
       } else {
-        n === 3 ? currentNextState[i][j] = 1 : currentNextState[i][j] = 0;
+        cellCountResult === 3 ? currentNextState[i][j] = 1 : currentNextState[i][j] = 0;
       }
     }
   }
@@ -74,11 +75,11 @@ let updateArrayToNextState = () => {
   return currentState = JSON.parse(JSON.stringify(currentNextState));
 }
 
-let updateCellColor = () => {
+const updateCellColor = () => {
   updateArrayToNextState().forEach(function(y, index1) {
     y.forEach(function(x, index2) {
       //二次元配列のindexからid番号を計算
-      let targetId = index1 * tableSize + index2;
+      const targetId = index1 * tableSize + index2;
       if (x === 1) {
         paintBlack("num" + targetId);
       } else {
@@ -89,14 +90,14 @@ let updateCellColor = () => {
 }
 
 //自マスの周りの生死を判定
-let lifeDeathJudge = (i, j) => {
+const lifeDeathJudge = (i, j) => {
   let aliveState = 0;
-  let diffCoor = [-1, 0 ,1];
+  const diffCoor = [-1, 0 ,1];
   diffCoor.forEach(function(y) {
     diffCoor.forEach(function(x) {
       //現座標から周囲8方向の座標を計算
-      let iy = i + y;
-      let jx = j + x;
+      const iy = i + y;
+      const jx = j + x;
        //比較する座標がx,y両方i,yと同じだった場合(自分のマスだった場合)、カウントしない
       if (iy != i || jx != j) {
         if (currentState[iy][jx] === 1) {
@@ -108,11 +109,11 @@ let lifeDeathJudge = (i, j) => {
   return aliveState;
 }
 
-let initPaintFunc = (paintTileId) => {
-  //IDから二次元配列の座標を取り出す
-  let result = paintTileId.split("m");
-  let i = result[1] / tableSize;
-  let j = result[1] % tableSize;
+const initPaintFunc = (paintTileId) => {
+  //IDから数字部分を取り出し、二次元配列の添字を求める
+  //split後[num, 100] = [1] / 40 = 2
+  let i = paintTileId.split("m")[1] / tableSize;
+  let j = paintTileId.split("m")[1] % tableSize;
   i = Math.floor(i);
   if (currentState[i][j]) {
     currentState[i][j] = 0;
@@ -161,21 +162,22 @@ let clearTable = () => {
   });
 }
 
+
+const start = () => {
+  if(id === 0) {
+    id = setInterval(updateCellColor, 80);
+  }
+}
+
+const stop = () => {
+  clearInterval(id);
+  id = 0;
+}
+
 const glider = () => {
   initPaintFunc("num83");
   initPaintFunc("num124");
   initPaintFunc("num164");
   initPaintFunc("num163");
   initPaintFunc("num162");
-}
-
-let start = () => {
-  if(id === 0) {
-    id = setInterval(updateCellColor, 80);
-  }
-}
-
-let stop = () => {
-  clearInterval(id);
-  id = 0;
 }
