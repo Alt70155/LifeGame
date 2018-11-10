@@ -3,10 +3,10 @@
 const tableSize = 40;
 let currentState = [];
 let currentNextState = [];
-let id;
+let id = 0;
 let sameAsBeforeCnt = 0;
 
-let init = () => {
+const init = () => {
   let table = document.getElementById("table");
   let ct = 0;
   for (let i = 0; i < tableSize; i++) {
@@ -15,6 +15,7 @@ let init = () => {
     for (let j = 0; j < tableSize; j++) {
       let td = document.createElement("td");
       outerFrameHidden(td, ct, i, j);
+      // td.textContent = ct;
       td.id = "num" + ct;
       td.classList.add("white");
       td.onclick = onClickFunc;
@@ -30,7 +31,7 @@ let init = () => {
 }
 
 //外枠１マス分多く取って処理・計算しているため、tableの一番外側を非表示にする。
-let outerFrameHidden = (td, ct, i, j) => {
+const outerFrameHidden = (td, ct, i, j) => {
   if (i === 0) {
     td.classList.add("upper-side");
   }
@@ -68,7 +69,7 @@ let updateArrayToNextState = () => {
       }
     }
   }
-  infinityCheck();
+  infinityLoopCheck();
   //配列を上書き
   return currentState = JSON.parse(JSON.stringify(currentNextState));
 }
@@ -77,11 +78,11 @@ let updateCellColor = () => {
   updateArrayToNextState().forEach(function(y, index1) {
     y.forEach(function(x, index2) {
       //二次元配列のindexからid番号を計算
-      let idNum = index1 * tableSize + index2;
+      let targetId = index1 * tableSize + index2;
       if (x === 1) {
-        paintBlack("num" + idNum);
+        paintBlack("num" + targetId);
       } else {
-        paintWhite("num" + idNum);
+        paintWhite("num" + targetId);
       }
     });
   });
@@ -134,7 +135,7 @@ let paintWhite = (paintTileId) => {
   td.classList.add("white");
 }
 
-let infinityCheck = () => {
+let infinityLoopCheck = () => {
   //無限ループ防止に前回の配列と100秒間同じだった場合止める
   const STOP_TIME = 100;
   if(currentState.toString() === currentNextState.toString()) {
@@ -150,7 +151,7 @@ let clearTable = () => {
     stop();
   }
   currentState.forEach(function(y, idx1) {
-    currentState.forEach(function(x, idx2) {
+    y.forEach(function(x, idx2) {
       if(currentState[idx1][idx2] === 1) {
         currentState[idx1][idx2] = 0;
         let targetId = idx1 * tableSize + idx2;
@@ -160,10 +161,21 @@ let clearTable = () => {
   });
 }
 
+const glider = () => {
+  initPaintFunc("num83");
+  initPaintFunc("num124");
+  initPaintFunc("num164");
+  initPaintFunc("num163");
+  initPaintFunc("num162");
+}
+
 let start = () => {
-  id = setInterval(updateCellColor, 100);
+  if(id === 0) {
+    id = setInterval(updateCellColor, 80);
+  }
 }
 
 let stop = () => {
   clearInterval(id);
+  id = 0;
 }
