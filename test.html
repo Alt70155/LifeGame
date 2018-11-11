@@ -6,8 +6,13 @@
   </head>
   <body>
     <script>
-    let p = x => document.write(x);
-    let array = Array(2).fill(0).forEach(p);
+    var tbl = JSON.parse(JSON.stringify((new Array(5)).fill((new Array(5)).fill(0))));
+    tbl.forEach(function(x,i){
+      x.forEach(function(y,j){
+        document.write(y + " ");
+      })
+      document.write("<br>");
+    })
     </script>
   </body>
 </html>
