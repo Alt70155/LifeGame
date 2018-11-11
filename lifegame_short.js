@@ -23,22 +23,11 @@ const init = () => {
     ct = ct + 2;
     table.appendChild(tr);
   }
-  // for (let x = 0; x < arraySize; x++) {
-  //   let currentStateTemp = [];
-  //   for (let y = 0; y < arraySize; y++) {
-  //     currentStateTemp.push(0);
-  //   }
-  //   currentState.push(currentStateTemp);
-  // }
   currentState = JSON.parse(JSON.stringify((new Array(arraySize)).fill((new Array(arraySize)).fill(0))));
   currentNextState = JSON.parse(JSON.stringify(currentState));
 }
 
-const onClickFunc = (e) => {
-  const targetId = e.target.id;
-  initPaintFunc(targetId);
-}
-
+const onClickFunc = (e) => initPaintFunc(e.target.id);
 
 const updateArrayToNextState = () => {
   for (let i = 1; i < tableSize; i++) {
@@ -69,7 +58,9 @@ const lifeDeathJudge = (i, j) => {
   diffCoor.forEach(function(y) {
     diffCoor.forEach(function(x) {
       if (i + y != i || j + x != j) {
-        if (currentState[i + y][j + x]) { aliveState++; }
+        if (currentState[i + y][j + x]) {
+          aliveState++;
+        }
       }
     });
   });
@@ -90,7 +81,7 @@ const initPaintFunc = (paintTileId) => {
 
 let paintBlack = (paintTileId) => {
   let td = document.getElementById(paintTileId);
-  if(td !== null) {
+  if (td !== null) {
     td.classList.remove("white");
     td.classList.add("black");
   }
@@ -98,12 +89,12 @@ let paintBlack = (paintTileId) => {
 
 let paintWhite = (paintTileId) => {
   let td = document.getElementById(paintTileId);
-  if(td !== null) {
+  if (td !== null) {
     td.classList.remove("black");
     td.classList.add("white");
   }
 }
 
-const clearTable = () => location.reload();
 const start = () => id = setInterval(updateCellColor, 80);
 const stop = () => clearInterval(id);
+const clear = () => location.reload();

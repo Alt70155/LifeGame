@@ -147,7 +147,7 @@ let infinityLoopCheck = () => {
   }
 }
 
-let clearTable = () => {
+let clear = () => {
   if(typeof id !== "undefined") {
     stop();
   }
