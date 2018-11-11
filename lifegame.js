@@ -124,18 +124,17 @@ let infinityLoopCheck = () => {
   }
 }
 
-const clear = () => {
-  document.write('hello');
-  // if(typeof id !== "undefined") { stop(); }
-  // currentState.forEach(function(inArray, i) {
-  //   inArray.forEach(function(x, j) {
-  //     if(currentState[i][j]) {
-  //       currentState[i][j] = 0;
-  //       const targetId = i * arraySize + j;
-  //       paintWhite("num" + targetId);
-  //     }
-  //   });
-  // });
+const clearCell = () => {
+  if(typeof id !== "undefined") { stop(); }
+  currentState.forEach(function(inArray, i) {
+    inArray.forEach(function(x, j) {
+      if(currentState[i][j]) {
+        currentState[i][j] = 0;
+        const targetId = i * arraySize + j;
+        paintWhite("num" + targetId);
+      }
+    });
+  });
 }
 
 
