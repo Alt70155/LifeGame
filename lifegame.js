@@ -30,10 +30,10 @@ const init = () => {
   currentNextState = JSON.parse(JSON.stringify(currentState));
 }
 
-const onClickFunc = (e) => initPaintFunc(e.target.id);
+const onClickFunc = e => initPaintFunc(e.target.id);
 
 const updateArrayToNextState = () => {
-  //外枠を抜かして判定
+  //table内のみループ
   for (let i = 1; i < tableSize; i++) {
     for (let j = 1; j < tableSize; j++) {
       const cellCountResult = lifeDeathJudge(i, j);
@@ -50,15 +50,11 @@ const updateArrayToNextState = () => {
 }
 
 const updateCellColor = () => {
-  updateArrayToNextState().forEach(function(inArray, i) {
-    inArray.forEach(function(x, j) {
+  updateArrayToNextState().forEach((inArray, i) => {
+    inArray.forEach((state, j) => {
       //添字からidを計算
       const targetId = i * arraySize + j;
-      if (x === 1) {
-        paintBlack("num" + targetId);
-      } else {
-        paintWhite("num" + targetId);
-      }
+      state ? paintBlack("num" + targetId) : paintWhite("num" + targetId);
     });
   });
 }
@@ -67,14 +63,14 @@ const updateCellColor = () => {
 const lifeDeathJudge = (i, j) => {
   let aliveState = 0;
   const diffCoor = [-1, 0 ,1];
-  diffCoor.forEach(function(y) {
-    diffCoor.forEach(function(x) {
+  diffCoor.forEach(y => {
+    diffCoor.forEach(x => {
       //現座標から周囲8方向の座標を計算
       const iy = i + y;
       const jx = j + x;
-       //比較する座標がx,y両方i,yと同じだった場合(自分のマスだった場合)、カウントしない
+       //比較する座標がx,y両方i,yと同じだった場合(自分のマスだった場合)をはじく
       if (iy != i || jx != j) {
-        if (currentState[iy][jx] === 1) {
+        if (currentState[iy][jx]) {
           aliveState++;
         }
       }
@@ -97,23 +93,23 @@ const initPaintFunc = (paintTileId) => {
   }
 }
 
-let paintBlack = (paintTileId) => {
-  let td = document.getElementById(paintTileId);
+const paintBlack = (paintTileId) => {
+  const td = document.getElementById(paintTileId);
   if (td !== null) {
     td.classList.remove("white");
     td.classList.add("black");
   }
 }
 
-let paintWhite = (paintTileId) => {
-  let td = document.getElementById(paintTileId);
+const paintWhite = (paintTileId) => {
+  const td = document.getElementById(paintTileId);
   if (td !== null) {
     td.classList.remove("black");
     td.classList.add("white");
   }
 }
 
-let infinityLoopCheck = () => {
+const infinityLoopCheck = () => {
   //無限ループ防止に前回の配列と100秒間同じだった場合止める
   const STOP_TIME = 100;
   if(currentState.toString() === currentNextState.toString()) {
@@ -126,8 +122,8 @@ let infinityLoopCheck = () => {
 
 const clearCell = () => {
   if(typeof id !== "undefined") { stop(); }
-  currentState.forEach(function(inArray, i) {
-    inArray.forEach(function(x, j) {
+  currentState.forEach((inArray, i) => {
+    inArray.forEach((x, j) => {
       if(currentState[i][j]) {
         currentState[i][j] = 0;
         const targetId = i * arraySize + j;
@@ -137,10 +133,9 @@ const clearCell = () => {
   });
 }
 
-
 const start = () => {
   if(id === 0) {
-    id = setInterval(updateCellColor, 80);
+    id = setInterval(updateCellColor, 90);
   }
 }
 
