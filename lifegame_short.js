@@ -5,7 +5,6 @@ const tableSize = arraySize - 1;
 let currentState = [];
 let currentNextState = [];
 let id = 0;
-let sameAsBeforeCnt = 0;
 
 const init = () => {
   const table = document.getElementById("table");

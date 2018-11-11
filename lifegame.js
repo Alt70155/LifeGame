@@ -1,6 +1,7 @@
 "use strict";
 
-const tableSize = 40;
+const arraySize = 40;
+const tableSize = arraySize - 1;
 let currentState = [];
 let currentNextState = [];
 let id = 0;
@@ -8,60 +9,33 @@ let sameAsBeforeCnt = 0;
 
 const init = () => {
   const table = document.getElementById("table");
-  let ct = 0;
-  for (let i = 0; i < tableSize; i++) {
+  let ct = arraySize + 1;
+  for (let i = 1; i < tableSize; i++) {
     const tr = document.createElement("tr");
     let currentStateTemp = [];
-    for (let j = 0; j < tableSize; j++) {
+    for (let j = 1; j < tableSize; j++) {
       const td = document.createElement("td");
-      outerFrameHidden(td, ct, i, j);
-      // td.textContent = ct;
       td.id = "num" + ct;
       td.classList.add("white");
       td.onclick = onClickFunc;
       tr.appendChild(td);
-      currentStateTemp.push(0);
       ct++;
     }
+    ct = ct + 2;
     table.appendChild(tr);
-    currentState.push(currentStateTemp);
   }
+  //初期値ゼロの二次元配列を作成
+  currentState = JSON.parse(JSON.stringify((new Array(arraySize)).fill((new Array(arraySize)).fill(0))));
   //currentStateをNextに値渡しして配列を複製
   currentNextState = JSON.parse(JSON.stringify(currentState));
 }
 
-//外枠１マス分多く取って処理・計算しているため、tableの一番外側を非表示にする。
-const outerFrameHidden = (td, ct, i, j) => {
-  if (i === 0) {
-    td.classList.add("upper-side");
-  }
-  if (i !== 0 && ct % tableSize === 0) {
-    td.classList.add("left-side");
-  }
-  if (ct % tableSize === tableSize - 1) {
-    td.classList.add("right-side");
-  }
-  if (ct >= tableSize * tableSize - tableSize) {
-    td.classList.add("bottom-side");
-  }
-}
-
-const onClickFunc = (e) => {
-  const targetId = e.target.id;
-  //要素の最初のクラスを取得
-  const targetClass = e.target.className.split(" ")[0];
-  //classが外枠のクラスだった場合をはじく
-  if (targetClass !== "left-side" && targetClass !== "right-side" &&
-      targetClass !== "upper-side" && targetClass !== "bottom-side") {
-    initPaintFunc(targetId);
-  }
-}
-
+const onClickFunc = (e) => initPaintFunc(e.target.id);
 
 const updateArrayToNextState = () => {
   //外枠を抜かして判定
-  for (let i = 1; i != tableSize - 1; i++) {
-    for (let j = 1; j != tableSize - 1; j++) {
+  for (let i = 1; i < tableSize; i++) {
+    for (let j = 1; j < tableSize; j++) {
       const cellCountResult = lifeDeathJudge(i, j);
       if (currentState[i][j]) {
         cellCountResult === 2 || cellCountResult === 3 ? currentNextState[i][j] = 1 : currentNextState[i][j] = 0;
@@ -76,10 +50,10 @@ const updateArrayToNextState = () => {
 }
 
 const updateCellColor = () => {
-  updateArrayToNextState().forEach(function(y, index1) {
-    y.forEach(function(x, index2) {
-      //二次元配列のindexからid番号を計算
-      const targetId = index1 * tableSize + index2;
+  updateArrayToNextState().forEach(function(inArray, i) {
+    inArray.forEach(function(x, j) {
+      //添字からidを計算
+      const targetId = i * arraySize + j;
       if (x === 1) {
         paintBlack("num" + targetId);
       } else {
@@ -112,9 +86,8 @@ const lifeDeathJudge = (i, j) => {
 const initPaintFunc = (paintTileId) => {
   //IDから数字部分を取り出し、二次元配列の添字を求める
   //split後[num, 100] = [1] / 40 = 2
-  let i = paintTileId.split("m")[1] / tableSize;
-  let j = paintTileId.split("m")[1] % tableSize;
-  i = Math.floor(i);
+  const i = Math.floor(paintTileId.split("m")[1] / arraySize)
+  const j = paintTileId.split("m")[1] % arraySize;
   if (currentState[i][j]) {
     currentState[i][j] = 0;
     paintWhite(paintTileId);
@@ -126,14 +99,18 @@ const initPaintFunc = (paintTileId) => {
 
 let paintBlack = (paintTileId) => {
   let td = document.getElementById(paintTileId);
-  td.classList.remove("white");
-  td.classList.add("black");
+  if (td !== null) {
+    td.classList.remove("white");
+    td.classList.add("black");
+  }
 }
 
 let paintWhite = (paintTileId) => {
   let td = document.getElementById(paintTileId);
-  td.classList.remove("black");
-  td.classList.add("white");
+  if (td !== null) {
+    td.classList.remove("black");
+    td.classList.add("white");
+  }
 }
 
 let infinityLoopCheck = () => {
@@ -147,19 +124,18 @@ let infinityLoopCheck = () => {
   }
 }
 
-let clear = () => {
-  if(typeof id !== "undefined") {
-    stop();
-  }
-  currentState.forEach(function(y, idx1) {
-    y.forEach(function(x, idx2) {
-      if(currentState[idx1][idx2] === 1) {
-        currentState[idx1][idx2] = 0;
-        let targetId = idx1 * tableSize + idx2;
-        paintWhite("num" + targetId);
-      }
-    });
-  });
+const clear = () => {
+  document.write('hello');
+  // if(typeof id !== "undefined") { stop(); }
+  // currentState.forEach(function(inArray, i) {
+  //   inArray.forEach(function(x, j) {
+  //     if(currentState[i][j]) {
+  //       currentState[i][j] = 0;
+  //       const targetId = i * arraySize + j;
+  //       paintWhite("num" + targetId);
+  //     }
+  //   });
+  // });
 }
 
 
