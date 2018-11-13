@@ -1,11 +1,6 @@
 "use strict";
-
-const arraySize = 14;
-const tableSize = arraySize - 1;
-let currentState = [];
-let currentNextState = [];
-let id = 0;
-
+const arraySize = 40,tableSize = arraySize - 1;
+let currentState = [],currentNextState = [],id = 0;
 const init = () => {
   const table = document.getElementById("table");
   let ct = arraySize + 1;
@@ -57,9 +52,7 @@ const lifeDeathJudge = (i, j) => {
   diffCoor.forEach(function(y) {
     diffCoor.forEach(function(x) {
       if (i + y != i || j + x != j) {
-        if (currentState[i + y][j + x]) {
-          aliveState++;
-        }
+        if (currentState[i + y][j + x]) aliveState++;
       }
     });
   });
