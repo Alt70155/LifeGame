@@ -4,7 +4,7 @@ const arraySize = 40;
 const tableSize = arraySize - 1;
 let currentState = [];
 let currentNextState = [];
-let id = 0;
+let id = null;
 let sameAsBeforeCnt = 0;
 
 const init = () => {
@@ -16,7 +16,6 @@ const init = () => {
     for (let j = 1; j < tableSize; j++) {
       const td = document.createElement("td");
       td.id = "num" + ct;
-      td.classList.add("white");
       td.onclick = onClickFunc;
       tr.appendChild(td);
       ct++;
@@ -70,9 +69,7 @@ const lifeDeathJudge = (i, j) => {
       const jx = j + x;
        //比較する座標がx,y両方i,yと同じだった場合(自分のマスだった場合)をはじく
       if (iy != i || jx != j) {
-        if (currentState[iy][jx]) {
-          aliveState++;
-        }
+        if (currentState[iy][jx]) { aliveState++; }
       }
     });
   });
@@ -82,7 +79,7 @@ const lifeDeathJudge = (i, j) => {
 const initPaintFunc = (paintTileId) => {
   //IDから数字部分を取り出し、二次元配列の添字を求める
   //split後[num, 100] = [1] / 40 = 2
-  const i = Math.floor(paintTileId.split("m")[1] / arraySize)
+  const i = Math.floor(paintTileId.split("m")[1] / arraySize);
   const j = paintTileId.split("m")[1] % arraySize;
   if (currentState[i][j]) {
     currentState[i][j] = 0;
@@ -95,23 +92,17 @@ const initPaintFunc = (paintTileId) => {
 
 const paintBlack = (paintTileId) => {
   const td = document.getElementById(paintTileId);
-  if (td !== null) {
-    td.classList.remove("white");
-    td.classList.add("black");
-  }
+  if (td !== null) { td.classList.add("black"); }
 }
 
 const paintWhite = (paintTileId) => {
   const td = document.getElementById(paintTileId);
-  if (td !== null) {
-    td.classList.remove("black");
-    td.classList.add("white");
-  }
+  if (td !== null) { td.classList.remove("black"); }
 }
 
 const infinityLoopCheck = () => {
   //無限ループ防止に前回の配列と100秒間同じだった場合止める
-  const STOP_TIME = 100;
+  const STOP_TIME = 1000;
   if(currentState.toString() === currentNextState.toString()) {
     sameAsBeforeCnt++;
     if(sameAsBeforeCnt === STOP_TIME) {
@@ -134,14 +125,12 @@ const clearCell = () => {
 }
 
 const start = () => {
-  if(id === 0) {
-    id = setInterval(updateCellColor, 90);
-  }
+  if(id === null) { id = setInterval(updateCellColor, 90); }
 }
 
 const stop = () => {
   clearInterval(id);
-  id = 0;
+  id = null;
 }
 
 const glider = () => {

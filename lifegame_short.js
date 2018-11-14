@@ -1,6 +1,7 @@
 "use strict";
 const arraySize = 40,tableSize = arraySize - 1;
 let currentState = [],currentNextState = [],id = 0;
+
 const init = () => {
   const table = document.getElementById("table");
   let ct = arraySize + 1;
@@ -60,7 +61,7 @@ const lifeDeathJudge = (i, j) => {
 }
 
 const initPaintFunc = (paintTileId) => {
-  const i = Math.floor(paintTileId.split("m")[1] / arraySize)
+  const i = ~~(paintTileId.split("m")[1] / arraySize)
   const j = paintTileId.split("m")[1] % arraySize;
   if (currentState[i][j]) {
     currentState[i][j] = 0;
@@ -74,7 +75,7 @@ const initPaintFunc = (paintTileId) => {
 let paintBlack = (paintTileId) => {
   let td = document.getElementById(paintTileId);
   if (td !== null) {
-    td.classList.remove("white");
+    td.classList.remove("white")
     td.classList.add("black");
   }
 }

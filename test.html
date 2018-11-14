@@ -5,9 +5,26 @@
     <title></title>
   </head>
   <body>
+    <table id="table"></table>
     <script>
-    name = 'taro'
-    document.write(`hello ${name}`);
+    const init = () => {
+      const table = document.getElementById("table");
+      let ct = 0;
+      for (let i = 0; i < 20; i++) {
+        const tr = document.createElement("tr");
+        let currentStateTemp = [];
+        for (let j = 0; j < 20; j++) {
+          const td = document.createElement("td");
+          td.id = "num" + ct;
+          td.textContent = ct;
+          td.classList.add("white");
+          tr.appendChild(td);
+          ct++;
+        }
+        table.appendChild(tr);
+      }
+    }
+    init();
     </script>
   </body>
 </html>
