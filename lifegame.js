@@ -71,6 +71,17 @@ const updateArrayToNextState = () => {
   return currentState = JSON.parse(JSON.stringify(currentNextState));
 }
 
+const infinityLoopCheck = () => {
+  //無限ループ防止に前回の配列の状態と100秒間同じだった場合止める
+  const STOP_TIME = 1000;
+  if (currentState.toString() === currentNextState.toString()) {
+    sameAsBeforeCnt++;
+    if (sameAsBeforeCnt === STOP_TIME) {
+      stop();
+    }
+  }
+}
+
 //自マスの周りの生死を判定
 const lifeDeathJudge = (i, j) => {
   let aliveState = 0;
@@ -80,7 +91,7 @@ const lifeDeathJudge = (i, j) => {
       //現座標から周囲8方向の座標を計算
       const iy = i + y;
       const jx = j + x;
-      //比較する座標がx,y両方i,yと同じだった場合(自分のマスだった場合)をはじく
+      //比較する座標が自分のマスだった場合をはじく
       if (iy != i || jx != j) {
         if (currentState[iy][jx]) {
           aliveState++;
@@ -106,28 +117,17 @@ const initPaintFunc = (paintTileId) => {
   }
 }
 
-const paintBlack = (paintTileId) => {
+const paintBlack = paintTileId => {
   const td = document.getElementById(paintTileId);
   if (td !== null) {
     td.classList.add("black");
   }
 }
 
-const paintWhite = (paintTileId) => {
+const paintWhite = paintTileId => {
   const td = document.getElementById(paintTileId);
   if (td !== null) {
     td.classList.remove("black");
-  }
-}
-
-const infinityLoopCheck = () => {
-  //無限ループ防止に前回の配列の状態と100秒間同じだった場合止める
-  const STOP_TIME = 1000;
-  if (currentState.toString() === currentNextState.toString()) {
-    sameAsBeforeCnt++;
-    if (sameAsBeforeCnt === STOP_TIME) {
-      stop();
-    }
   }
 }
 
@@ -140,13 +140,11 @@ const clearCell = () => {
       if (currentState[i][j]) {
         currentState[i][j] = 0;
         const targetId = i * JUDGE_FIELD_SIZE + j;
-        paintWhite("num" + targetId);
+        paintWhite(`num${targetId}`);
       }
     });
   });
 }
-
-
 
 const glider = () => {
   initPaintFunc("num83");
