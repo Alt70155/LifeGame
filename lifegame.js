@@ -10,9 +10,7 @@ let id = null;
 
 
 const start = () => {
-  if (id === null) {
-    id = setInterval(updateCellColor, 90);
-  }
+  if (id === null) id = setInterval(updateCellColor, 90);
 }
 
 const stop = () => {
@@ -67,7 +65,7 @@ const updateArrayToNextState = () => {
     }
   }
   infinityLoopCheck();
-  //配列を上書き
+  //配列を現在に上書き
   return currentState = JSON.parse(JSON.stringify(currentNextState));
 }
 
@@ -78,6 +76,7 @@ const infinityLoopCheck = () => {
     sameAsBeforeCnt++;
     if (sameAsBeforeCnt === STOP_TIME) {
       stop();
+      sameAsBeforeCnt = 0;
     }
   }
 }
@@ -92,11 +91,7 @@ const lifeDeathJudge = (i, j) => {
       const iy = i + y;
       const jx = j + x;
       //比較する座標が自分のマスだった場合をはじく
-      if (iy != i || jx != j) {
-        if (currentState[iy][jx]) {
-          aliveState++;
-        }
-      }
+      if ((iy != i || jx != j) && currentState[iy][jx]) aliveState++;
     });
   });
   return aliveState;
@@ -105,7 +100,7 @@ const lifeDeathJudge = (i, j) => {
 //最初にクリックで塗る時の関数
 const initPaintFunc = (paintTileId) => {
   //IDから数字部分を取り出し、二次元配列の添字を求める
-  //split後：[num, 100] = [1]：100 / 40 = 2
+  //[num, 100].split("m")[1] / 40 = 100 / 40 = 2
   const i = Math.floor(paintTileId.split("m")[1] / JUDGE_FIELD_SIZE);
   const j = paintTileId.split("m")[1] % JUDGE_FIELD_SIZE;
   if (currentState[i][j]) {
@@ -119,22 +114,16 @@ const initPaintFunc = (paintTileId) => {
 
 const paintBlack = paintTileId => {
   const td = document.getElementById(paintTileId);
-  if (td !== null) {
-    td.classList.add("black");
-  }
+  if (td !== null) td.classList.add("black");
 }
 
 const paintWhite = paintTileId => {
   const td = document.getElementById(paintTileId);
-  if (td !== null) {
-    td.classList.remove("black");
-  }
+  if (td !== null) td.classList.remove("black");
 }
 
 const clearCell = () => {
-  if (typeof id !== "undefined") {
-    stop();
-  }
+  if (id !== null) stop();
   currentState.forEach((inArray, i) => {
     inArray.forEach((x, j) => {
       if (currentState[i][j]) {
