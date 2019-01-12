@@ -1,10 +1,10 @@
 "use strict";
 
 //判定用のフィールドは実際使うフィールドより一回り大きく設定
-const JUDGE_FIELD_SIZE = 40;
-const FIELD_SIZE = JUDGE_FIELD_SIZE - 1;
 let currentState = [];
 let currentNextState = [];
+const JUDGE_FIELD_SIZE = 40;
+const FIELD_SIZE = JUDGE_FIELD_SIZE - 1;
 let sameAsBeforeCnt = 0;
 let id = null;
 
@@ -21,17 +21,21 @@ const stop = () => {
 }
 
 const init = () => {
+  //tableを作成
   const table = document.getElementById("table");
+  //一回り分の数を足してそこからカウント
   let ct = JUDGE_FIELD_SIZE + 1;
   for (let i = 1; i < FIELD_SIZE; i++) {
     const tr = document.createElement("tr");
     for (let j = 1; j < FIELD_SIZE; j++) {
       const td = document.createElement("td");
       td.id = `num${ct}`;
+      //td一つ一つにonClick関数をセットして、クリックで色を塗れるようにする
       td.onclick = onClickFunc;
       tr.appendChild(td);
       ct++;
     }
+    //外枠をスキップ
     ct += 2;
     table.appendChild(tr);
   }
@@ -46,7 +50,7 @@ const onClickFunc = e => initPaintFunc(e.target.id);
 const updateCellColor = () => {
   updateArrayToNextState().forEach((inArray, i) => {
     inArray.forEach((state, j) => {
-      //添字からHTML要素のidを計算
+      //添字からtd要素のidを計算
       const targetId = i * JUDGE_FIELD_SIZE + j;
       state ? paintBlack(`num${targetId}`) : paintWhite(`num${targetId}`);
     });
@@ -81,7 +85,7 @@ const infinityLoopCheck = () => {
   }
 }
 
-//自マスの周りの生死を判定
+//自マスの周りの生死を判定して生存マスの数を返す
 const lifeDeathJudge = (i, j) => {
   let aliveState = 0;
   const diffCoor = [-1, 0, 1];
@@ -97,8 +101,9 @@ const lifeDeathJudge = (i, j) => {
   return aliveState;
 }
 
-//最初にクリックで塗る時の関数
+//クリックで塗る時の関数
 const initPaintFunc = (paintTileId) => {
+  console.log(paintTileId)
   //IDから数字部分を取り出し、二次元配列の添字を求める
   //[num, 100].split("m")[1] / 40 = 100 / 40 = 2
   const i = Math.floor(paintTileId.split("m")[1] / JUDGE_FIELD_SIZE);
@@ -141,4 +146,34 @@ const glider = () => {
   initPaintFunc("num164");
   initPaintFunc("num163");
   initPaintFunc("num162");
+}
+
+const theQueenBee = () => {
+  initPaintFunc("num220");
+  initPaintFunc("num221");
+  initPaintFunc("num261");
+  initPaintFunc("num260");
+  initPaintFunc("num300");
+  initPaintFunc("num301");
+  initPaintFunc("num264");
+  initPaintFunc("num304");
+  initPaintFunc("num305");
+  initPaintFunc("num265");
+  initPaintFunc("num295");
+  initPaintFunc("num336");
+  initPaintFunc("num255");
+  initPaintFunc("num215");
+  initPaintFunc("num176");
+  initPaintFunc("num136");
+  initPaintFunc("num376");
+  initPaintFunc("num175");
+  initPaintFunc("num335");
+  initPaintFunc("num294");
+  initPaintFunc("num253");
+  initPaintFunc("num214");
+  initPaintFunc("num254");
+  initPaintFunc("num245");
+  initPaintFunc("num244");
+  initPaintFunc("num284");
+  initPaintFunc("num285");
 }
